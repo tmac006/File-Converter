@@ -1,27 +1,32 @@
 # File Converter
 
-A full-stack file conversion application that aims to provide seamless file format conversions with a modern web interface.
+A Python-based file conversion tool that converts images to JPEG or PDF format. The goal is to evolve it into a full-stack application with both backend conversion capabilities and a modern frontend interface.
 
- ## Project Status: Early Development
+## Project Status: Active Development
 
-This project is currently in its initial development phase. The goal is to evolve it into a full-stack application with both backend conversion capabilities and a modern frontend interface.
+This project currently provides a working CLI for image format conversions. Future development will add a web interface and support for additional file types.
 
- ## Current Features
+## Current Features
 
-- Basic file conversion functionality (in development)
-- Python-based backend using Pillow for image processing
+- **Image to JPEG conversion**: Convert images to JPEG format with customizable compression quality (default: 85)
+- **Image to PDF conversion**: Convert images to PDF format (supports multi-frame images like animated GIFs)
+- **Command-line interface**: Interactive CLI for easy conversions
+- **Automatic output path generation**: Automatically generates output paths if not specified
+- **Directory creation**: Automatically creates output directories if they don't exist
+- **Python-based backend**: Uses Wand (ImageMagick) for image processing
 
- # Planned Features
+## Planned Features
 
-## Backend Development
-- [ ] Support for multiple file types:
-  - [ ] Images (PNG, JPEG, GIF, WEBP, etc.)
-  - [ ] Documents (PDF, DOCX, TXT, etc.)
+### Backend Development
+- [x] Basic image conversion (JPEG, PDF)
+- [ ] Support for additional file types:
+  - [ ] More image formats (PNG, GIF, WEBP, etc.)
+  - [ ] Documents (DOCX, TXT, etc.)
   - [ ] Audio files (MP3, WAV, etc.)
   - [ ] Video files (MP4, AVI, etc.)
 - [ ] Batch processing capabilities
-- [ ] File compression options
-- [ ] Error handling and validation
+- [ ] Advanced compression options
+- [x] Basic error handling and validation
 - [ ] API endpoint development
 - [ ] File upload/download functionality
 
@@ -34,7 +39,7 @@ This project is currently in its initial development phase. The goal is to evolv
 - [ ] Conversion history
 - [ ] Responsive design
 
-### Infrastructure
+## Infrastructure (Planned)
 - [ ] Database integration for user data and conversion history
 - [ ] Cloud storage integration
 - [ ] Containerization with Docker
@@ -43,12 +48,15 @@ This project is currently in its initial development phase. The goal is to evolv
 - [ ] Performance monitoring
 - [ ] Rate limiting and queue system
 
-## Tech Stack (Planned)
+## Tech Stack
 
-### Backend
-- Python
+### Current
+- **Backend**: Python 3.8+
+- **Image Processing**: Wand (ImageMagick bindings)
+- **CLI Interface**: Built-in Python interactive prompts
+
+### Planned
 - FastAPI/Django
-- Pillow (Image processing)
 - FFmpeg (Media processing)
 - PostgreSQL
 - Redis (Caching/Queue)
@@ -65,20 +73,85 @@ This project is currently in its initial development phase. The goal is to evolv
 - GitHub Actions
 - Nginx
 
-##  Prerequisites
+## Installation
 
-- Python 3.13+
-- Virtual environment
-- Pillow library
+### Prerequisites
+
+- Python 3.8+ (supports type hints with `str | None`)
+- ImageMagick (required by Wand)
+- Virtual environment (recommended)
+
+### Setup
+
+1. Install ImageMagick:
+   - **macOS**: `brew install imagemagick`
+   - **Linux**: `sudo apt-get install imagemagick` (Debian/Ubuntu) or `sudo yum install ImageMagick` (RHEL/CentOS)
+   - **Windows**: Download from [ImageMagick website](https://imagemagick.org/script/download.php)
+
+2. Install Python dependencies:
+   ```bash
+   pip install Wand
+   ```
+
+## Usage
+
+Run the converter from the command line:
+
+```bash
+python converter.py
+```
+
+The interactive CLI will prompt you to:
+1. Select conversion type (PDF or JPEG)
+2. Enter the input file path
+3. Optionally specify an output path (defaults to same directory with new extension)
+
+### Examples
+
+**Convert to JPEG:**
+```
+Available conversion types:
+1) PDF
+2) JPEG
+3) JPG
+
+Enter conversion type (1, 2, pdf, or jpeg): 2
+Enter path to input image file: /path/to/image.png
+Enter output path [default: /path/to/image.jpg]: 
+```
+
+**Convert to PDF:**
+```
+Enter conversion type (1, 2, pdf, or jpeg): pdf
+Enter path to input image file: /path/to/image.jpg
+Enter output path [default: /path/to/image.pdf]: 
+```
+
+### Programmatic Usage
+
+You can also use the conversion functions directly in your Python code:
+
+```python
+from converter import convert_to_jpeg, convert_to_pdf
+
+# Convert to JPEG
+output = convert_to_jpeg("input.png")
+
+# Convert to PDF
+output = convert_to_pdf("input.jpg", "output.pdf")
+```
 
 
-##  Development Roadmap
+## Development Roadmap
 
 ### Phase 1: Core Backend Development
-- [ ] Implement basic file conversion functionality
-- [ ] Set up project structure
-- [ ] Add comprehensive error handling
-- [ ] Create basic CLI interface
+- [x] Implement basic file conversion functionality (JPEG and PDF)
+- [x] Set up project structure
+- [x] Add basic error handling
+- [x] Create basic CLI interface
+- [ ] Add support for additional image formats
+- [ ] Add batch processing capabilities
+- [ ] Enhance error handling with more specific error messages
 
 ### Phase 2: API Development
 - [ ] Design RESTful API
