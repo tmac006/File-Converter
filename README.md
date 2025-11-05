@@ -1,29 +1,41 @@
 # File Converter
 
-A Python-based file conversion tool that converts images to JPEG or PDF format. The goal is to evolve it into a full-stack application with both backend conversion capabilities and a modern frontend interface.
+A Python-based file conversion tool that converts images and videos to various formats. Supports multiple image formats (JPEG, PNG, GIF, WEBP, PDF, etc.) and video formats (MP4, AVI, MOV, MKV, WEBM, etc.) with an intuitive CLI interface.
 
 ## Project Status: Active Development
 
-This project currently provides a working CLI for image format conversions. Future development will add a web interface and support for additional file types.
+This project provides a working CLI for both image and video format conversions. Future development will add a web interface and additional features.
 
 ## Current Features
 
-- **Image to JPEG conversion**: Convert images to JPEG format with customizable compression quality (default: 85)
-- **Image to PDF conversion**: Convert images to PDF format (supports multi-frame images like animated GIFs)
-- **Command-line interface**: Interactive CLI for easy conversions
-- **Automatic output path generation**: Automatically generates output paths if not specified
-- **Directory creation**: Automatically creates output directories if they don't exist
-- **Python-based backend**: Uses Wand (ImageMagick) for image processing
+### Image Conversion
+- **Multiple format support**: JPEG, PNG, GIF, WEBP, BMP, TIFF, PDF, ICO, HEIC, AVIF
+- **Customizable quality**: Adjustable compression quality for lossy formats (default: 85)
+- **Multi-frame support**: Handles animated GIFs and converts all frames to PDF
+- **Format detection**: Automatically detects output format from file extension
+
+### Video Conversion
+- **Multiple format support**: MP4, AVI, MOV, MKV, WEBM, FLV, WMV, M4V, 3GP, OGV
+- **Quality presets**: Low, Medium, High, and Copy (no re-encoding)
+- **Codec selection**: Support for H.264, H.265, VP9, VP8, and more
+- **Bundled ffmpeg**: No manual installation required - ffmpeg is automatically bundled via `imageio-ffmpeg`
+
+### General Features
+- **Modular architecture**: Separate modules for image and video conversion
+- **Unified interface**: Single entry point (`main.py`) for all conversions
+- **Interactive CLI**: User-friendly command-line interface
+- **Automatic path generation**: Generates output paths if not specified
+- **Directory creation**: Automatically creates output directories if needed
 
 ## Planned Features
 
 ### Backend Development
-- [x] Basic image conversion (JPEG, PDF)
+- [x] Basic image conversion (JPEG, PNG, GIF, WEBP, PDF, etc.)
+- [x] Video conversion (MP4, AVI, MOV, MKV, WEBM, etc.)
+- [x] Bundled ffmpeg (no manual installation)
 - [ ] Support for additional file types:
-  - [ ] More image formats (PNG, GIF, WEBP, etc.)
   - [ ] Documents (DOCX, TXT, etc.)
   - [ ] Audio files (MP3, WAV, etc.)
-  - [ ] Video files (MP4, AVI, etc.)
 - [ ] Batch processing capabilities
 - [ ] Advanced compression options
 - [x] Basic error handling and validation
@@ -53,11 +65,12 @@ This project currently provides a working CLI for image format conversions. Futu
 ### Current
 - **Backend**: Python 3.8+
 - **Image Processing**: Wand (ImageMagick bindings)
+- **Video Processing**: ffmpeg (bundled via `imageio-ffmpeg`)
 - **CLI Interface**: Built-in Python interactive prompts
+- **Architecture**: Modular design with separate converters for images and videos
 
 ### Planned
 - FastAPI/Django
-- FFmpeg (Media processing)
 - PostgreSQL
 - Redis (Caching/Queue)
 
@@ -78,53 +91,97 @@ This project currently provides a working CLI for image format conversions. Futu
 ### Prerequisites
 
 - Python 3.8+ (supports type hints with `str | None`)
-- ImageMagick (required by Wand)
+- ImageMagick (required by Wand for image processing)
 - Virtual environment (recommended)
 
 ### Setup
 
-1. Install ImageMagick:
+1. **Install ImageMagick** (required for image conversion):
    - **macOS**: `brew install imagemagick`
    - **Linux**: `sudo apt-get install imagemagick` (Debian/Ubuntu) or `sudo yum install ImageMagick` (RHEL/CentOS)
    - **Windows**: Download from [ImageMagick website](https://imagemagick.org/script/download.php)
 
-2. Install Python dependencies:
+2. **Install Python dependencies**:
    ```bash
-   pip install Wand
+   pip install -r requirements.txt
    ```
+   
+   This will install:
+   - `Wand` - ImageMagick bindings for image processing
+   - `imageio-ffmpeg` - Bundles ffmpeg for video processing (no manual installation needed)
+
+**Note**: ffmpeg will be automatically downloaded on first video conversion use. No manual installation required!
 
 ## Usage
 
-Run the converter from the command line:
+### Main Entry Point
+
+Run the main converter:
 
 ```bash
-python converter.py
+python main.py
 ```
 
-The interactive CLI will prompt you to:
-1. Select conversion type (PDF or JPEG)
-2. Enter the input file path
-3. Optionally specify an output path (defaults to same directory with new extension)
+This will present a menu to choose between image or video conversion.
 
-### Examples
+### Individual Converters
 
-**Convert to JPEG:**
+You can also run the converters individually:
+
+```bash
+# Image converter only
+python image_converter.py
+
+# Video converter only
+python video_converter.py
 ```
-Available conversion types:
-1) PDF
-2) JPEG
-3) JPG
 
-Enter conversion type (1, 2, pdf, or jpeg): 2
+### Image Conversion Example
+
+```
+=== Image Converter ===
+
+Supported output formats:
+  1) JPEG
+  2) PNG
+  3) GIF
+  4) WEBP
+  5) PDF
+  6) BMP
+  7) TIFF
+  8) ICO
+  9) HEIC
+  10) AVIF
+
+Enter output format (name or number): 1
 Enter path to input image file: /path/to/image.png
 Enter output path [default: /path/to/image.jpg]: 
+Enter quality (1-100) [default: 85]: 
 ```
 
-**Convert to PDF:**
+### Video Conversion Example
+
 ```
-Enter conversion type (1, 2, pdf, or jpeg): pdf
-Enter path to input image file: /path/to/image.jpg
-Enter output path [default: /path/to/image.pdf]: 
+=== Video Converter ===
+
+Supported output formats:
+  1) MP4
+  2) AVI
+  3) MOV
+  4) MKV
+  5) WEBM
+  ...
+
+Enter output format (name or number): 1
+Enter path to input video file: /path/to/video.avi
+Enter output path [default: /path/to/video.mp4]: 
+
+Quality options:
+  1) Low (faster, larger file)
+  2) Medium (balanced)
+  3) High (slower, smaller file)
+  4) Copy (no re-encoding, fastest)
+Enter quality (1-4) [default: 2]: 
 ```
 
 ### Programmatic Usage
@@ -132,24 +189,44 @@ Enter output path [default: /path/to/image.pdf]:
 You can also use the conversion functions directly in your Python code:
 
 ```python
-from converter import convert_to_jpeg, convert_to_pdf
+from image_converter import convert_image
+from video_converter import convert_video
 
-# Convert to JPEG
-output = convert_to_jpeg("input.png")
+# Convert image to JPEG
+output = convert_image("input.png", output_format="jpeg", quality=85)
 
-# Convert to PDF
-output = convert_to_pdf("input.jpg", "output.pdf")
+# Convert image to PNG
+output = convert_image("input.jpg", "output.png", output_format="png")
+
+# Convert video to MP4 with high quality
+output = convert_video("input.avi", "output.mp4", output_format="mp4", quality="high")
+
+# Convert video with custom codec
+output = convert_video("input.mov", output_format="mp4", quality="medium", codec="h265")
 ```
 
+
+## Project Structure
+
+```
+File Converter/
+├── main.py              # Main entry point - unified interface
+├── image_converter.py   # Image conversion module
+├── video_converter.py   # Video conversion module
+├── requirements.txt     # Python dependencies
+└── README.md           # This file
+```
 
 ## Development Roadmap
 
 ### Phase 1: Core Backend Development
 - [x] Implement basic file conversion functionality (JPEG and PDF)
-- [x] Set up project structure
+- [x] Set up modular project structure
+- [x] Add support for multiple image formats
+- [x] Add video conversion support
+- [x] Bundle ffmpeg (no manual installation)
 - [x] Add basic error handling
-- [x] Create basic CLI interface
-- [ ] Add support for additional image formats
+- [x] Create CLI interface
 - [ ] Add batch processing capabilities
 - [ ] Enhance error handling with more specific error messages
 
